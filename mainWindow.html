@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Store List</title>
+    <!-- MaterializeCSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+</head>
+<body>
+
+    <nav>
+        <div class="nav-wrapper">
+            <a class="brand-logo center">Store List</a>
+        </div>
+    </nav>
+
+    <ul></ul>
+
+    <script>
+        const electron = require("electron");
+        const {ipcRenderer} = electron;
+        const ul = document.querySelector("ul");
+
+        // Add new item
+        // Catch 'item:add' value from main.js's ipcMain
+        ipcRenderer.on('item:add', function(event, item){
+            // add materialzeCSS collection class to the ul
+            ul.className = 'collection';
+            // Create li
+            const li = document.createElement('li');
+            // Add collection-item CSS class to the li
+            li.className = 'collection-item';
+            const itemText = document.createTextNode(item); // creat TextNode
+            li.appendChild(itemText); // Add TextNode to li
+            ul.appendChild(li); // Add li to the ul
+        });
+
+        // Clear items => Catch 'item:clear'
+        ipcRenderer.on('item:clear', function(){
+            ul.innerHTML = '';
+            // remove css class applied on ul when there are no list items
+            ul.className = '';
+        });
+
+        // Remove the double clicked item
+        ul.addEventListener('dblclick', removeItem);
+
+        function removeItem(event){
+            // Remove the double clicked item from DOM
+            event.target.remove();
+            // If there are no li's, clear out collection css class in ul
+            if(ul.children.length === 0){
+                ul.className = '';
+            }
+        }
+    </script>
+
+</body>
+</html>

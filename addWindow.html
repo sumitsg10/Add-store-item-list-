@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Store List Item</title>
+    <!-- MaterializeCSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+</head>
+<body>
+    <div class="container">
+        <form>
+            <div>
+                <label>Enter an Item</label>
+                <!-- As soon as window loads, cursor will be auto focussed on input -->
+                <input type="text" id="item" autofocus>
+            </div>
+
+            <button class="btn waves-effect waves-light" type="submit" name="action">
+                Add Item
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // ipcRenderer => will pass item's value to MainWindow through main.js
+        const electron = require("electron");
+        const {ipcRenderer} = electron;
+
+        const form = document.querySelector("form");
+        // When form is submitted
+        form.addEventListener('submit', submitForm);
+
+        function submitForm(event){
+            // Whenever we submit a form, it's automatically gonna be submitted to a file
+            // To prevent this default behavior from happening
+            event.preventDefault();
+
+            const item = document.querySelector("#item").value;
+            if(item){
+                ipcRenderer.send('item:add', item);
+            }
+        }
+    </script>
+
+</body>
+</html>
